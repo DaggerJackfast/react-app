@@ -77,10 +77,19 @@ var Acticle = React.createClass({
 
 
 var TextInput = React.createClass({
-    onBtnClickHandler:function () {
+    onBtnClickHandler: function () {
         console.log(this.refs);
         alert(ReactDOM.findDOMNode(this.refs.myTextInput).value);
     },
+    componentWillReceiveProps: function (nextProps) {
+        this.setState({
+            likesIncreasing:nextProps.likeCount > this.props.likeCount
+        });
+    },
+    componentDidMount: function () {
+        ReactDOM.findDOMNode(this.refs.myTextInput);
+    },
+
     render: function () {
         return (
             <div>
