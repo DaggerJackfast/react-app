@@ -77,28 +77,21 @@ var Acticle = React.createClass({
 
 
 var TextInput = React.createClass({
-    onChangeHandler: function (e) {
-        this.setState({myValue: e.target.value})
-    },
-    onBtnClickHandler: function (e) {
-        e.preventDefault();
-        alert(this.state.myValue);
-    },
-    getInitialState: function () {
-        return {
-            myValue: ''
-        };
+    onBtnClickHandler:function () {
+        console.log(this.refs);
+        alert(ReactDOM.findDOMNode(this.refs.myTextInput).value);
     },
     render: function () {
         return (
             <div>
                 <input className="text-input"
                        type="text"
-                       onChange={this.onChangeHandler}
-                       value={this.state.myValue}
+                       ref="myTextInput"
+                       defaultValue=""
                        placeholder="Введите значение"
                 />
                 <button
+                    ref="btnSubmit"
                     className="submit-button"
                     onClick={this.onBtnClickHandler}>
                     Отправить
