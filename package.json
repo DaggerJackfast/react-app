@@ -1,0 +1,14 @@
+{
+  "name": "test-react-app",
+  "version": "1.0.0",
+  "description": "Test application in react.js (for education)",
+  "main": "index.html",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "Aibek Abdykasymov",
+  "license": "MIT",
+  "devDependencies": {
+    "express": "^4.14.1"
+  }
+}
