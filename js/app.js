@@ -1,7 +1,7 @@
 console.log(React);
 console.log(ReactDOM);
 
-var my_news = [
+var newsList = [
     {
         author: 'Author 1',
         text: 'Text 1'
@@ -28,9 +28,21 @@ var App = React.createClass({
     render: function () {
         return (
             <div className="app">
-                Всем привет, я обновленнный компоненет App
-                <News data={my_news}/>{/* новое свойство */}
-                <Comments/>
+                <h3>Новости</h3>
+                <News data={newsList}/>
+            </div>
+        );
+    }
+});
+
+var Acticle = React.createClass({
+    render: function () {
+        var author = this.props.data.author;
+        var text = this.props.data.text
+        return (
+            <div className="article">
+                <p className="news__author">{author}</p>
+                <p className="news__text">{text}</p>
             </div>
         );
     }
@@ -40,32 +52,25 @@ var App = React.createClass({
 var News = React.createClass({
     render: function () {
         var data = this.props.data;
-        var newsTemplate = data.map(function (item, index) {
-            return (
-                <div key={index}>
-                    <p className="news__author">{item.author}</p>
-                    <p className="news__text">{item.text}</p>
-                </div>
-            )
-        });
-        console.log(newsTemplate);
+        var newsTemplate;
+        if (data.length > 0) {
+            newsTemplate = data.map(function (item, index) {
+                return (  <div key={index}>
+                    <Acticle data={item}/>
+                </div>)
+            });
+        } else {
+            newsTemplate = <p>К сожалению на данный момент нет новостей</p>
+        }
         return (
             <div className="news">
                 {newsTemplate}
+                <strong className={'news__count' + (data.length > 0 ? '' : 'none')}>Всего новостей: {data.length}</strong>
             </div>
         );
     }
 });
 
-var Comments = React.createClass({
-    render: function () {
-        return (
-            <div className="comments">
-                Нет новостей комментировать нечего
-            </div>
-        );
-    }
-});
 
 ReactDOM.render(
     <App/>,
