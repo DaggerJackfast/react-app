@@ -31,6 +31,7 @@ var App = React.createClass({
         return (
             <div className="app">
                 <h3>Новости</h3>
+                <TextInput/>
                 <News data={newsList}/>
             </div>
         );
@@ -60,8 +61,6 @@ var Acticle = React.createClass({
         var bigText = this.props.data.bigText;
         var visible = this.state.visible;
 
-        console.log('render',this);
-
         return (
             <div className="article">
                 <p className="news__author">{author}</p>
@@ -77,15 +76,42 @@ var Acticle = React.createClass({
 });
 
 
-var News = React.createClass({
-    getInitialState:function () {
-        return {
-            counter:0
-        }
+var TextInput = React.createClass({
+    onChangeHandler: function (e) {
+        this.setState({myValue: e.target.value})
     },
-    onTotalNewsClick:function (e) {
+    onBtnClickHandler: function (e) {
         e.preventDefault();
-        this.setState({counter:++this.state.counter})
+        alert(this.state.myValue);
+    },
+    getInitialState: function () {
+        return {
+            myValue: ''
+        };
+    },
+    render: function () {
+        return (
+            <div>
+                <input className="text-input"
+                       type="text"
+                       onChange={this.onChangeHandler}
+                       value={this.state.myValue}
+                       placeholder="Введите значение"
+                />
+                <button
+                    className="submit-button"
+                    onClick={this.onBtnClickHandler}>
+                    Отправить
+                </button>
+            </div>
+        );
+    }
+});
+var News = React.createClass({
+    getInitialState: function () {
+        return {
+            counter: 0
+        }
     },
     render: function () {
         var data = this.props.data;
@@ -103,8 +129,8 @@ var News = React.createClass({
             <div className="news">
                 {newsTemplate}
                 <strong className={'news__count' + (data.length > 0 ? '' : 'none')}
-                onClick={this.onTotalNewsClick}>
-                    Всего   новостей: {data.length}</strong>
+                        onClick={this.onTotalNewsClick}>
+                    Всего новостей: {data.length}</strong>
             </div>
         );
     }
