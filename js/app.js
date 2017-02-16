@@ -102,11 +102,7 @@ var Add = React.createClass({
         this.setState({agreeNotChecked: !this.state.agreeNotChecked});
     },
     onFieldChange:function (fieldName,e) {
-        if(e.target.value.trim().length>0){
-            this.setState({[''+fieldName]:false})
-        }else{
-            this.setState({[''+fieldName]:true})
-        }
+        this.setState({[''+fieldName]:!(e.target.value.trim().length>0)})
     },
 
     render: function () {
