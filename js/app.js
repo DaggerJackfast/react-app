@@ -101,18 +101,11 @@ var Add = React.createClass({
     onCheckRuleClick: function (e) {
         this.setState({agreeNotChecked: !this.state.agreeNotChecked});
     },
-    onAuthorChange: function (e) {
-        if (e.target.value.trim().length > 0) {
-            this.setState({authorIsEmpty: false})
-        } else {
-            this.setState({authorIsEmpty: true})
-        }
-    },
-    onTextChange:function (e) {
+    onFieldChange:function (fieldName,e) {
         if(e.target.value.trim().length>0){
-            this.setState({textIsEmpty:false})
+            this.setState({[''+fieldName]:false})
         }else{
-            this.setState({textIsEmpty:true})
+            this.setState({[''+fieldName]:true})
         }
     },
 
@@ -123,13 +116,13 @@ var Add = React.createClass({
         return (
             <form className="add cf">
                 <input type="text"
-                       onChange={this.onAuthorChange}
+                       onChange={this.onFieldChange.bind(this,'authorIsEmpty')}
                        className="add__author"
                        defaultValue=""
                        placeholder="Ваше имя"
                        ref="author"/>
                 <textarea className="add__text"
-                          onChange={this.onTextChange}
+                          onChange={this.onFieldChange.bind(this,'textIsEmpty')}
                           defaultValue=""
                           ref="text"
                           placeholder="Текст новости">                    
