@@ -31,7 +31,7 @@ var App = React.createClass({
         return (
             <div className="app">
                 <h3>Новости</h3>
-                <TextInput/>
+                <Add/>
                 <News data={newsList}/>
             </div>
         );
@@ -76,36 +76,49 @@ var Acticle = React.createClass({
 });
 
 
-var TextInput = React.createClass({
-    onBtnClickHandler: function () {
-        console.log(this.refs);
-        alert(ReactDOM.findDOMNode(this.refs.myTextInput).value);
+var Add = React.createClass({
+    onBtnClickHandler: function (e) {
+        e.preventDefault();
     },
     componentWillReceiveProps: function (nextProps) {
         this.setState({
-            likesIncreasing:nextProps.likeCount > this.props.likeCount
+            likesIncreasing: nextProps.likeCount > this.props.likeCount
         });
     },
     componentDidMount: function () {
-        ReactDOM.findDOMNode(this.refs.myTextInput);
+        ReactDOM.findDOMNode(this.refs.author).focus();
+    },
+    onCheckRuleClick:function (e) {
+        ReactDOM.findDOMNode(this.refs.sumbit_button).disabled=!e.target.checked;
     },
 
     render: function () {
         return (
-            <div>
-                <input className="text-input"
-                       type="text"
-                       ref="myTextInput"
+            <form className="add cf">
+                <input type="text"
+                       className="add__author"
                        defaultValue=""
-                       placeholder="Введите значение"
-                />
+                       placeholder="Ваше имя"
+                       ref="author"/>
+                <textarea className="add__text"
+                          defaultValue=""
+                          ref="text"
+                          placeholder="Текст новости">                    
+                </textarea>
+                <label className="add__checkrule">
+                    <input type="checkbox"
+                           defaultChecked={false}
+                           onChange={this.onCheckRuleClick}
+                           ref="checkrule"/> Я согласен с правилами
+                </label>
                 <button
-                    ref="btnSubmit"
-                    className="submit-button"
-                    onClick={this.onBtnClickHandler}>
+                className="add_btn"
+                onClick={this.onBtnClickHandler}
+                ref="sumbit_button"
+                disabled>
                     Отправить
                 </button>
-            </div>
+            </form>
         );
     }
 });
