@@ -26,13 +26,31 @@ var newsList = [
     },
 ];
 
+window.ee=new EventEmitter();
+
 var App = React.createClass({
+    getInitialState:function () {
+        return{
+            news:newsList
+        };
+    },
+    componentDidMount:function () {
+        var self=this;
+        window.ee.addListener('News.add',function (item) {
+            var nextNews=item.concat(self.state.news);
+            self.setState({news:nextNews});
+        })
+    },
+    componentWillUnmount:function () {
+        window.ee.removeListener('News.add');
+    },
     render: function () {
+        console.log('render');
         return (
             <div className="app">
-                <h3>Новости</h3>
                 <Add/>
-                <News data={newsList}/>
+                <h3>Новости</h3>
+                <News data={this.state.news}/>
             </div>
         );
     }
@@ -80,8 +98,16 @@ var Add = React.createClass({
     onBtnClickHandler: function (e) {
         e.preventDefault();
         var author = ReactDOM.findDOMNode(this.refs.author).value;
-        var text = ReactDOM.findDOMNode(this.refs.text).value;
-        alert(author + '\n' + text);
+        var textElement = ReactDOM.findDOMNode(this.refs.text);
+        var text=textElement.value;
+        var item=[{
+            author:author,
+            text:text,
+            bigText:'...',
+        }];
+        window.ee.emit('News.add',item);
+        textElement.value='';
+        this.setState({textElement:true});
     },
     componentWillReceiveProps: function (nextProps) {
         this.setState({
