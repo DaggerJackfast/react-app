@@ -88,28 +88,48 @@ var Add = React.createClass({
             likesIncreasing: nextProps.likeCount > this.props.likeCount
         });
     },
-    getInitialState:function () {
-        return{
-            btnIsDisabled:true
+    getInitialState: function () {
+        return {
+            agreeNotChecked: true,
+            authorIsEmpty: true,
+            textISEmpty: true
         };
     },
     componentDidMount: function () {
         ReactDOM.findDOMNode(this.refs.author).focus();
     },
-    onCheckRuleClick:function (e) {
-        this.setState({btnIsDisabled:!this.state.btnIsDisabled});
+    onCheckRuleClick: function (e) {
+        this.setState({agreeNotChecked: !this.state.agreeNotChecked});
+    },
+    onAuthorChange: function (e) {
+        if (e.target.value.trim().length > 0) {
+            this.setState({authorIsEmpty: false})
+        } else {
+            this.setState({authorIsEmpty: true})
+        }
+    },
+    onTextChange:function (e) {
+        if(e.target.value.trim().length>0){
+            this.setState({textIsEmpty:false})
+        }else{
+            this.setState({textIsEmpty:true})
+        }
     },
 
-
     render: function () {
+        var agreeNotChecked=this.state.agreeNotChecked;
+        var authorIsEmpty=this.state.authorIsEmpty;
+        var textIsEmpty=this.state.textIsEmpty;
         return (
             <form className="add cf">
                 <input type="text"
+                       onChange={this.onAuthorChange}
                        className="add__author"
                        defaultValue=""
                        placeholder="Ваше имя"
                        ref="author"/>
                 <textarea className="add__text"
+                          onChange={this.onTextChange}
                           defaultValue=""
                           ref="text"
                           placeholder="Текст новости">                    
@@ -120,10 +140,10 @@ var Add = React.createClass({
                            ref="checkrule"/> Я согласен с правилами
                 </label>
                 <button
-                className="add_btn"
-                onClick={this.onBtnClickHandler}
-                ref="sumbit_button"
-                disabled={this.state.btnIsDisabled}>
+                    className="add_btn"
+                    onClick={this.onBtnClickHandler}
+                    ref="sumbit_button"
+                    disabled={agreeNotChecked||authorIsEmpty||textIsEmpty}>
                     Отправить
                 </button>
             </form>
