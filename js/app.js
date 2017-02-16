@@ -85,11 +85,16 @@ var Add = React.createClass({
             likesIncreasing: nextProps.likeCount > this.props.likeCount
         });
     },
+    getInitialState:function () {
+        return{
+            btnIsDisabled:true
+        };
+    },
     componentDidMount: function () {
         ReactDOM.findDOMNode(this.refs.author).focus();
     },
     onCheckRuleClick:function (e) {
-        ReactDOM.findDOMNode(this.refs.sumbit_button).disabled=!e.target.checked;
+        this.setState({btnIsDisabled:!this.state.btnIsDisabled});
     },
 
     render: function () {
@@ -107,7 +112,6 @@ var Add = React.createClass({
                 </textarea>
                 <label className="add__checkrule">
                     <input type="checkbox"
-                           defaultChecked={false}
                            onChange={this.onCheckRuleClick}
                            ref="checkrule"/> Я согласен с правилами
                 </label>
@@ -115,7 +119,7 @@ var Add = React.createClass({
                 className="add_btn"
                 onClick={this.onBtnClickHandler}
                 ref="sumbit_button"
-                disabled>
+                disabled={this.state.btnIsDisabled}>
                     Отправить
                 </button>
             </form>
