@@ -79,6 +79,9 @@ var Acticle = React.createClass({
 var Add = React.createClass({
     onBtnClickHandler: function (e) {
         e.preventDefault();
+        var author = ReactDOM.findDOMNode(this.refs.author).value;
+        var text = ReactDOM.findDOMNode(this.refs.text).value;
+        alert(author + '\n' + text);
     },
     componentWillReceiveProps: function (nextProps) {
         this.setState({
@@ -96,6 +99,7 @@ var Add = React.createClass({
     onCheckRuleClick:function (e) {
         this.setState({btnIsDisabled:!this.state.btnIsDisabled});
     },
+
 
     render: function () {
         return (
