@@ -1,3 +1,6 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+import EventEmitter from 'events';
 var newsList = [
     {
         author: 'Author 1',
@@ -26,26 +29,29 @@ var newsList = [
     },
 ];
 
-window.ee=new EventEmitter();
+var ee = new EventEmitter();
 
-var App = React.createClass({
-    getInitialState:function () {
-        return{
-            news:newsList
-        };
-    },
-    componentDidMount:function () {
-        var self=this;
-        window.ee.addListener('News.add',function (item) {
-            var nextNews=item.concat(self.state.news);
-            self.setState({news:nextNews});
+class App extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            news: newsList
+        }
+    }
+
+    componentDidMount=()=> {
+        var self = this;
+        ee.addListener('News.add', function (item) {
+            let nextNews = item.concat(self.state.news);
+            self.setState({news: nextNews});
         })
-    },
-    componentWillUnmount:function () {
-        window.ee.removeListener('News.add');
-    },
-    render: function () {
-        console.log('render');
+    }
+
+    componentWillUnmount() {
+        ee.removeListener('News.add');
+    }
+
+    render() {
         return (
             <div className="app">
                 <Add/>
@@ -54,30 +60,29 @@ var App = React.createClass({
             </div>
         );
     }
-});
+}
 
-var Acticle = React.createClass({
-    propTypes: {
-        data: React.PropTypes.shape({
-            author: React.PropTypes.string.isRequired,
-            text: React.PropTypes.string.isRequired,
-            bigText: React.PropTypes.string.isRequired,
-        })
-    },
-    getInitialState: function () {
-        return {
+class Article extends React.Component {
+
+
+    constructor(props) {
+        super(props);
+        this.state = {
             visible: false
-        };
-    },
-    readmoreClick: function (e) {
+        }
+    }
+
+
+    readmoreClick = (e) => {
         e.preventDefault();
         this.setState({visible: true});
-    },
-    render: function () {
-        var author = this.props.data.author;
-        var text = this.props.data.text;
-        var bigText = this.props.data.bigText;
-        var visible = this.state.visible;
+    }
+
+    render() {
+        let author = this.props.data.author;
+        let text = this.props.data.text;
+        let bigText = this.props.data.bigText;
+        let visible = this.state.visible;
 
         return (
             <div className="article">
@@ -91,60 +96,73 @@ var Acticle = React.createClass({
             </div>
         );
     }
-});
+}
 
-
-var Add = React.createClass({
-    onBtnClickHandler: function (e) {
+Article.propTypes = {
+    data: React.PropTypes.shape({
+        author: React.PropTypes.string.isRequired,
+        text: React.PropTypes.string.isRequired,
+        bigText: React.PropTypes.string.isRequired,
+    })
+};
+class Add extends React.Component {
+    onBtnClickHandler = (e) => {
         e.preventDefault();
-        var author = ReactDOM.findDOMNode(this.refs.author).value;
-        var textElement = ReactDOM.findDOMNode(this.refs.text);
-        var text=textElement.value;
-        var item=[{
-            author:author,
-            text:text,
-            bigText:'...',
+        let author = ReactDOM.findDOMNode(this.refs.author).value;
+        let textElement = ReactDOM.findDOMNode(this.refs.text);
+        let text = textElement.value;
+        let item = [{
+            author: author,
+            text: text,
+            bigText: '...',
         }];
-        window.ee.emit('News.add',item);
-        textElement.value='';
-        this.setState({textElement:true});
-    },
-    componentWillReceiveProps: function (nextProps) {
+        ee.emit('News.add', item);
+        textElement.value = '';
+        this.setState({textElement: true});
+    }
+
+    componentWillReceiveProps = (nextProps) => {
         this.setState({
             likesIncreasing: nextProps.likeCount > this.props.likeCount
         });
-    },
-    getInitialState: function () {
-        return {
+    }
+
+
+    constructor(props) {
+        super(props);
+        this.state = {
             agreeNotChecked: true,
             authorIsEmpty: true,
-            textISEmpty: true
-        };
-    },
-    componentDidMount: function () {
-        ReactDOM.findDOMNode(this.refs.author).focus();
-    },
-    onCheckRuleClick: function (e) {
-        this.setState({agreeNotChecked: !this.state.agreeNotChecked});
-    },
-    onFieldChange:function (fieldName,e) {
-        this.setState({[''+fieldName]:!(e.target.value.trim().length>0)})
-    },
+            textIsEmpty: true
+        }
+    }
 
-    render: function () {
-        var agreeNotChecked=this.state.agreeNotChecked;
-        var authorIsEmpty=this.state.authorIsEmpty;
-        var textIsEmpty=this.state.textIsEmpty;
+    componentDidMount() {
+        ReactDOM.findDOMNode(this.refs.author).focus();
+    }
+
+    onCheckRuleClick = (e) => {
+        this.setState({agreeNotChecked: !this.state.agreeNotChecked});
+    }
+
+    onFieldChange=(fieldName, e)=> {
+        this.setState({['' + fieldName]: !(e.target.value.trim().length > 0)})
+    }
+
+    render() {
+        let agreeNotChecked = this.state.agreeNotChecked;
+        let authorIsEmpty = this.state.authorIsEmpty;
+        let textIsEmpty = this.state.textIsEmpty;
         return (
             <form className="add cf">
                 <input type="text"
-                       onChange={this.onFieldChange.bind(this,'authorIsEmpty')}
+                       onChange={this.onFieldChange.bind(this, 'authorIsEmpty')}
                        className="add__author"
                        defaultValue=""
                        placeholder="Ваше имя"
                        ref="author"/>
                 <textarea className="add__text"
-                          onChange={this.onFieldChange.bind(this,'textIsEmpty')}
+                          onChange={this.onFieldChange.bind(this, 'textIsEmpty')}
                           defaultValue=""
                           ref="text"
                           placeholder="Текст новости">                    
@@ -158,26 +176,30 @@ var Add = React.createClass({
                     className="add_btn"
                     onClick={this.onBtnClickHandler}
                     ref="sumbit_button"
-                    disabled={agreeNotChecked||authorIsEmpty||textIsEmpty}>
+                    disabled={agreeNotChecked || authorIsEmpty || textIsEmpty}>
                     Отправить
                 </button>
             </form>
         );
     }
-});
-var News = React.createClass({
-    getInitialState: function () {
-        return {
+}
+class News extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
             counter: 0
         }
-    },
-    render: function () {
-        var data = this.props.data;
-        var newsTemplate;
+    }
+
+
+    render() {
+        let data = this.props.data;
+        let newsTemplate;
         if (data.length > 0) {
             newsTemplate = data.map(function (item, index) {
                 return (  <div key={index}>
-                    <Acticle data={item}/>
+                    <Article data={item}/>
                 </div>)
             });
         } else {
@@ -192,7 +214,7 @@ var News = React.createClass({
             </div>
         );
     }
-});
+}
 
 
 ReactDOM.render(
